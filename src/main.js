@@ -6,7 +6,6 @@ const gallery = document.querySelector('.gallery');
 const loadMore = document.querySelector('.div-load');
 
 let page = 1;
-let query = '';
 const perPage = 15;
 
 form.addEventListener('submit', async e => {
