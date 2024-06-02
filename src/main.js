@@ -29,7 +29,7 @@ form.addEventListener('submit', async e => {
     const response = await api.sendRequest(query, page, perPage);
     handleResponse(response);
   } catch (error) {
-    console.error('Ошибка в обработчике события submit:', error);
+    console.error('error:', error);
     render.showAlertNotFound();
   }
 });
@@ -76,7 +76,7 @@ async function onLoadMore() {
     handleResponse(response, true);
     smoothScroll();
   } catch (error) {
-    console.error('Ошибка при загрузке дополнительных изображений:', error);
+    console.error('error:', error);
   } finally {
     toggleLoadMoreAndLoader();
   }
