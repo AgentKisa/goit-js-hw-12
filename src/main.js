@@ -7,6 +7,7 @@ const loadMore = document.querySelector('.div-load');
 
 let page = 1;
 const perPage = 15;
+let totalPages = 0;
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
@@ -16,6 +17,8 @@ form.addEventListener('submit', async e => {
     render.showInputNotFound();
     return;
   }
+
+  removeEndOfResultsMessage();
 
   gallery.innerHTML = render.getLoaderHtml();
 
@@ -27,6 +30,7 @@ form.addEventListener('submit', async e => {
 
   try {
     const response = await api.sendRequest(query, page, perPage);
+    totalPages = Math.ceil(response.totalHits / perPage);
     handleResponse(response);
   } catch (error) {
     console.error('error:', error);
@@ -94,4 +98,11 @@ function smoothScroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+}
+
+function removeEndOfResultsMessage() {
+  const endMessage = document.querySelector('.end-of-results-message');
+  if (endMessage) {
+    endMessage.remove();
+  }
 }

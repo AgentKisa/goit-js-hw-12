@@ -50,5 +50,6 @@ export function showEndOfResults() {
     "We're sorry, but you've reached the end of search results.";
   endMessage.style.textAlign = 'center';
   endMessage.style.marginTop = '20px';
+  endMessage.classList.add('end-of-results-message');
   document.body.appendChild(endMessage);
 }
