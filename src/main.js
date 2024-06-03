@@ -3,6 +3,7 @@ import * as render from './js/render-functions';
 
 const form = document.querySelector('.form');
 const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.div-load');
 
 const perPage = 15;
 
