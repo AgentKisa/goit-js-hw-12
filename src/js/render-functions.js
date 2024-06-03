@@ -8,11 +8,22 @@ export const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
-export function getLoaderHtml() {
+const loadMoreBtn = document.querySelector('.div-load');
+const loadHolder = document.querySelector('.load-holder');
+
+function getLoaderHtml() {
   return '<div class="loader"></div>';
 }
 
-export function showInputNotFound() {
+export function hideLoader() {
+  loadHolder.innerHTML = '';
+}
+
+export function showLoader() {
+  loadHolder.innerHTML = getLoaderHtml();
+}
+
+export function showAlertEmptyInput() {
   iziToast.warning({
     title: 'Fill in the search field',
     position: 'topRight',
@@ -24,6 +35,13 @@ export function showAlertNotFound() {
     title: 'Error',
     message:
       'Sorry, there are no images matching your search query. Please try again!',
+    position: 'topRight',
+  });
+}
+
+export function showAlertEndOfSearchResults() {
+  iziToast.warning({
+    title: "We're sorry, but you've reached the end of search results.",
     position: 'topRight',
   });
 }
@@ -42,14 +60,23 @@ export function getImageHtml(image) {
 }
 
 export function getImagesHtml(images) {
-  return images.map(image => getImageHtml(image)).join('');
+  return images.map(getImageHtml).join('');
 }
-export function showEndOfResults() {
-  const endMessage = document.createElement('p');
-  endMessage.textContent =
-    "We're sorry, but you've reached the end of search results.";
-  endMessage.style.textAlign = 'center';
-  endMessage.style.marginTop = '20px';
-  endMessage.classList.add('end-of-results-message');
-  document.body.appendChild(endMessage);
+
+export function hideLoadMoreBtn() {
+  loadMoreBtn.classList.add('load-more-hidden');
+}
+
+export function showLoadMoreBtn() {
+  loadMoreBtn.classList.remove('load-more-hidden');
+}
+
+export function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
