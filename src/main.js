@@ -68,7 +68,9 @@ function handleResponse(response) {
 
   render.lightbox.refresh();
 
-  render.smoothScroll();
+  if (page != 1) {
+    render.smoothScroll();
+  }
 }
 
 function handleError(error) {
