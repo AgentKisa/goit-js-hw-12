@@ -29,7 +29,7 @@ function onSearch(e) {
   render.showLoader();
   
   api.sendRequest(query, handleResponse, handleError, page, perPage);
-});
+}
 
 function onLoadMore() {
   page++;
