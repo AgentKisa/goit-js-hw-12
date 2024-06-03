@@ -40,8 +40,6 @@ function onLoadMore() {
   render.showLoader();
  
   api.sendRequest(query, handleResponse, handleError, page, perPage);
-  
-  render.smoothScroll();
 }
 
 function handleResponse(response) {
@@ -69,6 +67,8 @@ function handleResponse(response) {
   }
 
   render.lightbox.refresh();
+
+  render.smoothScroll();
 }
 
 function handleError(error) {
