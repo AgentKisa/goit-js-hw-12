@@ -3,106 +3,73 @@ import * as render from './js/render-functions';
 
 const form = document.querySelector('.form');
 const gallery = document.querySelector('.gallery');
-const loadMore = document.querySelector('.div-load');
 
-let page = 1;
 const perPage = 15;
-let totalPages = 0;
 
-form.addEventListener('submit', async e => {
+let page;
+let query;
+
+form.addEventListener('submit', onSearch);
+loadMoreBtn.addEventListener('click', onLoadMore);
+
+function onSearch(e) {
   e.preventDefault();
-  const query = e.target.elements.searchInput.value.trim();
 
   if (query === '') {
     render.showInputNotFound();
     return;
   }
+  query = e.target.elements.searchInput.value.trim();
 
-  removeEndOfResultsMessage();
+  page = 1; // reset to first page
+  gallery.innerHTML = '';
 
-  gallery.innerHTML = render.getLoaderHtml();
+  render.hideLoadMoreBtn();
 
-  page = 1; // Сброс страницы при новом поиске
-
-  //   api.sendRequest(query, handleResponse);
-
-  loadMore.classList.add('load-more-hidden');
-
-  try {
-    const response = await api.sendRequest(query, page, perPage);
-    totalPages = Math.ceil(response.totalHits / perPage);
-    handleResponse(response);
-  } catch (error) {
-    console.error('error:', error);
-    render.showAlertNotFound();
-  }
+  render.showLoader();
+  
+  api.sendRequest(query, handleResponse, handleError, page, perPage);
 });
 
-function handleResponse(response, loadMoreBtn = false) {
-  if (!response || response.total === 0) {
+function onLoadMore() {
+  page++;
+
+  render.hideLoadMoreBtn();
+
+  render.showLoader();
+ 
+  api.sendRequest(query, handleResponse, handleError, page, perPage);
+  
+  render.smoothScroll();
+}
+
+function handleResponse(response) {
+  console.log('response', response);
+
+  if (!response || response.totalHits === 0) {
+    render.hideLoader();
     render.showAlertNotFound();
     gallery.innerHTML = '';
-    loadMore.classList.add('load-more-hidden');
     return;
   }
+  
+  const totalPages = Math.ceil(response.totalHits / perPage);
+  
   const images = response.hits;
-  console.log('response', response);
   const galleryFilling = render.getImagesHtml(images);
 
-  //   gallery.innerHTML = galleryFilling;
-
-  if (loadMoreBtn) {
-    gallery.innerHTML += galleryFilling;
+  render.hideLoader();
+  gallery.innerHTML += galleryFilling;
+  
+  if (totalPages > page) {
+    render.showLoadMoreBtn();
   } else {
-    gallery.innerHTML = galleryFilling;
-  }
-
-  if (gallery.children.length < response.totalHits) {
-    loadMore.classList.remove('load-more-hidden');
-  } else {
-    loadMore.classList.add('load-more-hidden');
-    render.showEndOfResults();
+    render.showAlertEndOfSearchResults();
   }
 
   render.lightbox.refresh();
 }
 
-loadMore.addEventListener('click', onLoadMore);
-
-async function onLoadMore() {
-  page += 1;
-  const query = form.elements.searchInput.value.trim();
-
-  toggleLoadMoreAndLoader();
-
-  try {
-    const response = await api.sendRequest(query, page, perPage);
-    handleResponse(response, true);
-    smoothScroll();
-  } catch (error) {
-    console.error('error:', error);
-  } finally {
-    toggleLoadMoreAndLoader();
-  }
-}
-
-function toggleLoadMoreAndLoader() {
-  loadMore.classList.toggle('hidden');
-}
-
-function smoothScroll() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
-}
-
-function removeEndOfResultsMessage() {
-  const endMessage = document.querySelector('.end-of-results-message');
-  if (endMessage) {
-    endMessage.remove();
-  }
+function handleError(error) {
+  console.log('error:', error);
 }
