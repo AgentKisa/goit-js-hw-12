@@ -129,3 +129,10 @@ body {
 .load-more-hidden {
   display: none;
 }
+
+.load-holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
