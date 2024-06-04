@@ -19,7 +19,7 @@ function onSearch(e) {
   query = e.target.elements.searchInput.value.trim();
 
   if (query === '') {
-    render.showInputNotFound();
+    render.showAlertEmptyInput();
     return;
   }
 
