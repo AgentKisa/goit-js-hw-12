@@ -16,11 +16,12 @@ loadMoreBtn.addEventListener('click', onLoadMore);
 function onSearch(e) {
   e.preventDefault();
 
+  query = e.target.elements.searchInput.value.trim();
+
   if (query === '') {
     render.showInputNotFound();
     return;
   }
-  query = e.target.elements.searchInput.value.trim();
 
   page = 1; // reset to first page
   gallery.innerHTML = '';
@@ -28,7 +29,7 @@ function onSearch(e) {
   render.hideLoadMoreBtn();
 
   render.showLoader();
-  
+
   api.sendRequest(query, handleResponse, handleError, page, perPage);
 }
 
@@ -38,7 +39,7 @@ function onLoadMore() {
   render.hideLoadMoreBtn();
 
   render.showLoader();
- 
+
   api.sendRequest(query, handleResponse, handleError, page, perPage);
 }
 
@@ -51,15 +52,15 @@ function handleResponse(response) {
     gallery.innerHTML = '';
     return;
   }
-  
+
   const totalPages = Math.ceil(response.totalHits / perPage);
-  
+
   const images = response.hits;
   const galleryFilling = render.getImagesHtml(images);
 
   render.hideLoader();
   gallery.innerHTML += galleryFilling;
-  
+
   if (totalPages > page) {
     render.showLoadMoreBtn();
   } else {
